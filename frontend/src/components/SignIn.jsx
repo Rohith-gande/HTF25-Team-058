@@ -12,6 +12,7 @@ const SignIn = ({ onLogin }) => {
     setLoading(true);
     try {
       const { idToken, user } = await AuthService.signIn({ email, password });
+      localStorage.setItem("idToken", idToken); // store token if needed
       onLogin({ idToken, user });
     } catch (err) {
       alert(err.message);

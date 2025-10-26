@@ -9,19 +9,33 @@ const SignUp = ({ onLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+  //   if (password !== confirmPassword) return alert("Passwords do not match!");
+  //   setLoading(true);
+  //   try {
+  //     const { idToken, user } = await AuthService.signUp({ name, email, password });
+  //     onLogin({ idToken, user });
+  //   } catch (err) {
+  //     alert(err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
   async function handleSubmit(e) {
-    e.preventDefault();
-    if (password !== confirmPassword) return alert("Passwords do not match!");
-    setLoading(true);
-    try {
-      const { idToken, user } = await AuthService.signUp({ name, email, password });
-      onLogin({ idToken, user });
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setLoading(false);
-    }
+  e.preventDefault();
+  if (password !== confirmPassword) return alert("Passwords do not match!");
+  setLoading(true);
+  try {
+    // destructure exactly as returned by backend
+    const { idToken, user } = await AuthService.signUp({ name, email, password });
+    onLogin({ idToken, user });
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-50 flex items-center justify-center p-4">

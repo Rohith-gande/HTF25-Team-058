@@ -32,15 +32,24 @@ const AudioPlayer = ({ podcast }) => {
       <p className="text-gray-700 mb-4 truncate">{podcast.title}</p>
 
       {/* 🧠 BACKEND PLACEHOLDER: audio URL will come from backend */}
-      <audio ref={audioRef} src={podcast.audioUrl} className="hidden" />
+      <audio ref={audioRef} 
+      src={podcast.audioUrl} 
+      // src={podcast ? `http://localhost:8000${podcast.audio_url}` : ""} 
+      className="hidden" />
 
-      <button
+      {/* <button
         onClick={togglePlay}
-        className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg mx-auto"
+        className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-md"
       >
-        {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-        {isPlaying ? "Pause" : "Play"}
-      </button>
+        {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+      </button> */}
+
+      {/* Optional: default HTML audio controls */}
+      <audio
+        controls
+        src={`http://localhost:8000${podcast.audio_url}`}
+        className="w-full mt-4"
+      />
     </div>
   );
 };

@@ -13,7 +13,11 @@ const DashboardPage = ({ onSignOut }) => {
     // 🧠 BACKEND PLACEHOLDER
     // When backend returns new podcast metadata, add it to the list
     // Optionally update library from backend again
-    setCurrentPodcast(podcast);
+    setCurrentPodcast({
+    ...podcast,
+    audioUrl: `http://localhost:8000${podcast.audio_url}`
+  });
+
   };
 
   return (

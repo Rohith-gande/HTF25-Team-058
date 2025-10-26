@@ -11,38 +11,76 @@ const GeneratorView = ({ onPodcastGenerated, currentPodcast }) => {
     if (file) setSelectedFile(file);
   };
 
-  const handleGeneratePodcast = async () => {
-    if (!selectedFile) return;
-    setIsGenerating(true);
+  // const handleGeneratePodcast = async () => {
+  //   if (!selectedFile) return;
+  //   setIsGenerating(true);
 
-    try {
-      // === 🧠 BACKEND PLACEHOLDER ===
-      // 1. Create FormData and append file
-      // const formData = new FormData();
-      // formData.append("file", selectedFile);
-      //
-      // 2. Make API call to FastAPI endpoint
-      // const response = await fetch("http://localhost:8000/generate_podcast/", {
-      //   method: "POST",
-      //   headers: { "Authorization": `Bearer ${id_token}` }, // Firebase token if used
-      //   body: formData,
-      // });
-      //
-      // 3. Parse response and extract audio URL
-      // const data = await response.json();
-      // setAudioUrl(data.audio_url);
-      // onPodcastGenerated(data.podcast);
+  //   try {
+  //     // === 🧠 BACKEND PLACEHOLDER ===
+  //     // 1. Create FormData and append file
+  //     // const formData = new FormData();
+  //     // formData.append("file", selectedFile);
+  //     //
+  //     // 2. Make API call to FastAPI endpoint
+  //     // const response = await fetch("/api/v1/generate_podcast/", {
+  //     //   method: "POST",
+  //     //   headers: { "Authorization": `Bearer ${id_token}` }, // Firebase token if used
+  //     //   body: formData,
+  //     // });
+  //     //
+  //     // 3. Parse response and extract audio URL
+  //     // const data = await response.json();
+  //     // setAudioUrl(data.audio_url);
+  //     // onPodcastGenerated(data.podcast);
 
-      // TODO: Remove this mock once backend is ready
-      setTimeout(() => {
-        setAudioUrl(null);
+  //     // TODO: Remove this mock once backend is ready
+  //     setTimeout(() => {
+  //       setAudioUrl(null);
+  //       setIsGenerating(false);
+  //     }, 1500);
+  //   } catch (error) {
+  //     console.error("Error generating podcast:", error);
+  //     setIsGenerating(false);
+  //   }
+  // };
+    const handleGeneratePodcast = async () => {
+      if (!selectedFile) return;
+      setIsGenerating(true);
+
+      try {
+        // === ✅ STEP 1: Create FormData and append file ===
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        // === ✅ STEP 2: Make actual API call to FastAPI backend ===
+        const response = await fetch("http://localhost:8000/api/v1/generate_podcast/", {
+          method: "POST",
+          // headers: { "Authorization": `Bearer ${id_token}` }, // 🔒 Commented out for now
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        // === ✅ STEP 3: Parse response JSON ===
+        const data = await response.json();
+
+        // === ✅ STEP 4: Update state with backend data ===
+        setAudioUrl(data.audio_url);
+        onPodcastGenerated({
+          id: data.podcast_id,
+          title: data.title,
+          summary: data.summary,
+          audio_url: data.audio_url,
+        });
+
         setIsGenerating(false);
-      }, 1500);
-    } catch (error) {
-      console.error("Error generating podcast:", error);
-      setIsGenerating(false);
-    }
-  };
+      } catch (error) {
+        console.error("Error generating podcast:", error);
+        setIsGenerating(false);
+      }
+    };
 
   return (
     <div>
