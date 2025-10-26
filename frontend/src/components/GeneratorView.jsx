@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Upload, Loader2 } from "lucide-react";
-
+import axios from "axios";
 const GeneratorView = ({ onPodcastGenerated, currentPodcast }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -11,60 +11,30 @@ const GeneratorView = ({ onPodcastGenerated, currentPodcast }) => {
     if (file) setSelectedFile(file);
   };
 
-  // const handleGeneratePodcast = async () => {
-  //   if (!selectedFile) return;
-  //   setIsGenerating(true);
-
-  //   try {
-  //     // === 🧠 BACKEND PLACEHOLDER ===
-  //     // 1. Create FormData and append file
-  //     // const formData = new FormData();
-  //     // formData.append("file", selectedFile);
-  //     //
-  //     // 2. Make API call to FastAPI endpoint
-  //     // const response = await fetch("/api/v1/generate_podcast/", {
-  //     //   method: "POST",
-  //     //   headers: { "Authorization": `Bearer ${id_token}` }, // Firebase token if used
-  //     //   body: formData,
-  //     // });
-  //     //
-  //     // 3. Parse response and extract audio URL
-  //     // const data = await response.json();
-  //     // setAudioUrl(data.audio_url);
-  //     // onPodcastGenerated(data.podcast);
-
-  //     // TODO: Remove this mock once backend is ready
-  //     setTimeout(() => {
-  //       setAudioUrl(null);
-  //       setIsGenerating(false);
-  //     }, 1500);
-  //   } catch (error) {
-  //     console.error("Error generating podcast:", error);
-  //     setIsGenerating(false);
-  //   }
-  // };
     const handleGeneratePodcast = async () => {
       if (!selectedFile) return;
       setIsGenerating(true);
 
       try {
         // === ✅ STEP 1: Create FormData and append file ===
+        const id_token = localStorage.getItem("idToken"); // Retrieve stored token
         const formData = new FormData();
         formData.append("file", selectedFile);
 
         // === ✅ STEP 2: Make actual API call to FastAPI backend ===
-        const response = await fetch("http://localhost:8000/api/v1/generate_podcast/", {
-          method: "POST",
-          // headers: { "Authorization": `Bearer ${id_token}` }, // 🔒 Commented out for now
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/generate_podcast/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${id_token}`,
+            },
+          }
+        );
 
         // === ✅ STEP 3: Parse response JSON ===
-        const data = await response.json();
+        const data = await response.data;
 
         // === ✅ STEP 4: Update state with backend data ===
         setAudioUrl(data.audio_url);

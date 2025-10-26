@@ -10,6 +10,10 @@ class Settings:
     
     # Gemini API Configuration
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
+    CLOUDINARY_URL: str = os.getenv("CLOUDINARY_URL")
+    CLOUD_NAME: str = os.getenv("CLOUD_NAME")
+    CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY")
+    CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET")
     
     # File Upload Settings
     MAX_FILE_SIZE: int = 10 * 1024 * 1024  # 10MB
